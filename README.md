@@ -28,3 +28,56 @@ A flexible, production-ready Docker solution for running the official Astro Colo
 - All game data stored in `./data` for persistence
 
 
+## Example: Docker Compose Setup
+
+To get started quickly, copy the provided example file:
+
+```sh
+cp compose.yml.example compose.yml
+```
+
+Edit `compose.yml` to fit your needs (change ports, volumes, environment variables, etc).
+
+**Example `compose.yml.example`:**
+
+```yaml
+services:
+  astrocolony-server:
+    build: .
+    container_name: astrocolony-dedicated
+    environment:
+      # Docker-level user and SteamCMD settings
+      PUID: "1000"
+      PGID: "1000"
+      APP_ID: "2934900"
+      UPDATE_BRANCH: "public"
+
+      # Visible Steam name (not written to ini)
+      SteamServerName: "My Awesome Colony"
+
+      # Astro Colony server config (AC_ prefix for dynamic config)
+      AC_ServerPassword: "YourPassword"
+      AC_Seed: "113"
+      AC_MapName: "YourMapName"
+      AC_MaxPlayers: "5"
+      AC_ShouldLoadLatestSavegame: "True"
+      AC_AdminList: "76561199104220463"
+      AC_SharedTechnologies: "True"
+      AC_OxygenConsumption: "True"
+      AC_AutosaveInterval: "5.0"
+      AC_AutosavesCount: "10"
+      AC_FreeConstruction: "True"
+      AC_Sandbox: "True"
+    volumes:
+      - ./data:/home/steam/astro_server
+    ports:
+      - "7777:7777/udp"
+      - "27015:27015/udp"
+    restart: unless-stopped
+```
+
+> **Tip:**  
+> All environment variables prefixed with `AC_` will be written to `ServerSettings.ini`.  
+> Adjust `PUID` and `PGID` to match your host user for correct file permissions.
+
+
